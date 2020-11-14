@@ -5,11 +5,7 @@ version available on pypi.
 """
 
 import pkg_resources
-try:
-    import ujson as json
-except ImportError:
-    import json
-from urllib.request import urlopen
+import requests
 from packaging import version
 
 
@@ -33,8 +29,8 @@ def get_latest_version(package_name):
     """
     try:
         url = "https://pypi.org/pypi/{}/json".format(package_name)
-        resp = urlopen(url)
-        data = json.loads(resp.read().decode('utf8', errors='backslashreplace'))
+        resp = requests.get(url)
+        data = resp.json()
         return (data.get('info').get('release_url').split('/')[-2])
     except:
         return 'unknown'
