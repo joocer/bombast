@@ -12,6 +12,7 @@ except ImportError:
 from urllib.request import urlopen
 from packaging import version
 
+
 class colors:
     CYAN = '\033[96m'
     MAGENTA = '\033[95m'
@@ -38,13 +39,15 @@ def get_latest_version(package_name):
     except:
         return 'unknown'
 
+def main():
+    for package in pkg_resources.working_set:
+        installed_version = package.version
+        latest_version = get_latest_version(package.project_name)
+        package_name = package.project_name
 
-for package in pkg_resources.working_set:
-    installed_version = package.version
-    latest_version = get_latest_version(package.project_name)
-    package_name = package.project_name
+        if installed_version == latest_version:
+            print(colors.GREEN + "✓ PASS: {} ({})".format(package_name, installed_version) + colors.END)
+        else:
+            print(colors.RED   + "✗ FAIL: {} ({}), latest: {}".format(package_name, installed_version, latest_version) + colors.END)
 
-    if installed_version == latest_version:
-        print(colors.GREEN + "✓ PASS: {} ({})".format(package_name, installed_version) + colors.END)
-    else:
-        print(colors.RED   + "✗ FAIL: {} ({}), latest: {}".format(package_name, installed_version, latest_version) + colors.END)
+main()
